@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ICategory } from '../utils/interface';
 import { RouteComponentProps } from 'react-router';
+import {json} from '../utils/api'
 
 class Add extends React.Component<IAddProps, IAddState> {
 
@@ -10,16 +11,15 @@ class Add extends React.Component<IAddProps, IAddState> {
             title: '',
             author: '',
             categoryid: 1,
-            price: "0",
+            price: "",
             categories: [],
             selectedCategory: "0"
         }
     }
 
     async componentDidMount() {
-        let res = await fetch('/api/categories')
-        let data = await res.json();
-        this.setState({ categories: data })
+        let res = await json('/api/categories')
+        this.setState({ categories: res })
     }
 
     async addBook(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -31,16 +31,10 @@ class Add extends React.Component<IAddProps, IAddState> {
             price: this.state.price
         }
         try {
-            let res = await fetch('/api/books', {
-                method: 'POST',
-                headers: {
-                    "Content-type": "application/json"
-                },
-                body: JSON.stringify(newBook)
-            });
-            if(res.ok) {
-                this.props.history.push('/')
-            }
+            let result = await json('/api/books', 'POST', newBook);
+            // if(res.ok) {
+            //     this.props.history.push('/')
+            // }
         } catch (error) {
             console.log(error)
         }

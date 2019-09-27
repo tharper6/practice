@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import {json} from '../utils/api'
 
 class Edit extends React.Component<IEditProps, IEditState> {
 
@@ -22,13 +23,7 @@ class Edit extends React.Component<IEditProps, IEditState> {
             price: this.state.price
         }
         try {
-            let res = await fetch(`/api/books/${this.props.match.params.id}`, {
-                method: 'PUT',
-                headers: {
-                    "Content-type": "application/json"
-                },
-                body: JSON.stringify(editedBook)
-            });
+            let res = await json(`/api/books/${this.props.match.params.id}`, 'PUT', editedBook);
             if(res.ok) {
                 this.props.history.push('/')
             }
@@ -40,9 +35,7 @@ class Edit extends React.Component<IEditProps, IEditState> {
     async handleDelete(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         e.preventDefault();
         try {
-            let res = await fetch(`/api/books/${this.props.match.params.id}`, {
-                method: 'DELETE'
-            });
+            let res = await json(`/api/books/${this.props.match.params.id}`, 'DELETE');
             if(res.ok) {
                 this.props.history.push('/')
             }

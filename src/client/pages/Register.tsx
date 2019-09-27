@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { json, SetAccessToken } from '../utils/api';
+import { RouteComponentProps } from 'react-router';
 
 class Register extends React.Component<IRegisterProps, IRegisterState> {
 
@@ -11,8 +13,15 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
         };
     }
 
-    async handleClick() {
-        
+    async handleClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        e.preventDefault();
+        try {
+            let result = await json('/auth/register', 'POST', this.state);
+            SetAccessToken(result.token, { userid: result.token, role: result.role });
+            this.props.history.push('/')
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     render() {
@@ -25,14 +34,14 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
                     <input value={this.state.email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ email: e.target.value })} className="form-control" type="text"/>
                     <label>Password:</label>
                     <input value={this.state.password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ password: e.target.value })} className="form-control" type="password"/>
-                    <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => this.handleClick()} >Register!</button>
+                    <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => this.handleClick(e)} >Register!</button>
                 </form>
             </main>
         )
     }
 }
 
-export interface IRegisterProps { }
+export interface IRegisterProps extends RouteComponentProps { }
 
 export interface IRegisterState {
     name: string,
